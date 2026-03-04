@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melody Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --accent: #b45309;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+        .serif { font-family: 'Playfair Display', serif; }
+
+        .aurora-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            filter: blur(120px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .blob {
+            position: absolute;
+            width: 600px; height: 600px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fff7ed 100%);
+            border-radius: 50%;
+            animation: move 30s infinite alternate;
+        }
+        @keyframes move {
+            from { transform: translate(-5%, -5%) scale(1); }
+            to { transform: translate(10%, 10%) scale(1.1); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(118px);
+            -webkit-backdrop-filter: blur(112px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .scroll-progress-container {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(0,0,0,0.02);
+        }
+        #scroll-bar {
+            height: 100%; width: 0%;
+            background: var(--accent);
+            transition: width 0.1s ease-out;
+        }
+
+        .nav-item.active {
+            color: #000;
+            font-weight: 800;
+        }
+        .nav-item.active::after {
+            content: ''; display: block; width: 12px; height: 2px;
+            background: var(--accent); margin: 4px auto 0; border-radius: 2px;
+        }
+
+        .menu-row {
+            display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0;
+        }
+        .dots {
+            flex: 1; border-bottom: 1px dotted rgba(0,0,0,0.1); margin: 0 8px; position: relative; top: -4px;
+        }
+
+        .section-header {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 40px;
+        }
+
+        .instagram-float {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); z-index: 100; transition: transform 0.3s ease;
+        }
+        .instagram-float:active { transform: scale(0.9); }
+
+        /* Updated Icon sizing - no borders, larger presence */
+        .category-icon {
+            width: 100px; height: 100px; object-fit: cover; border-radius: 0;
+            background: transparent; border: none;
+        }
+        .main-logo {
+            width: 140px; height: 140px; object-fit: contain; border-radius: 0;
+            background: transparent; border: none;
+        }
+    </style>
+</head>
+<body class="pb-24">
+
+    <div class="aurora-bg"><div class="blob"></div></div>
+
+    <!-- Instagram Button -->
+    <a href="https://www.instagram.com/melody_musicbar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="instagram-float">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+    </a>
+
+    <!-- Language Selector -->
+    <div class="fixed top-6 right-6 z-[100] flex gap-2">
+        <button onclick="setLanguage('sq')" id="btn-sq" class="text-[10px] font-bold tracking-widest px-2 py-1 transition-all">SQ</button>
+        <button onclick="setLanguage('en')" id="btn-en" class="text-[10px] font-bold tracking-widest px-2 py-1 opacity-40 transition-all">EN</button>
+    </div>
+
+    <!-- Header -->
+    <header class="pt-24 pb-12 px-6 text-center">
+        <img src="C:\Users\ASUS\OneDrive\Pictures\Screenshots\Screenshot 2026-03-03 234337.png" alt="Melody Logo" class="main-logo mx-auto mb-5" style="display: block;">
+        <h1 class="serif text-6xl mb-1 text-slate-900 tracking-tighter">Melody</h1>
+        <div class="space-y-1 mt-2">
+            <p data-key="music-bar" class="text-[12px] uppercase tracking-[0.4em] text-slate-900 font-extrabold">Music Bar</p>
+            <p data-key="digital-menu" class="text-[10px] uppercase tracking-[0.6em] text-amber-800/60 font-semibold">Menu Digjitale</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="sticky-nav">
+        <div class="flex py-5 px-6 gap-8 no-scrollbar overflow-x-auto justify-start md:justify-center">
+            <a href="#oferte" data-key="nav-offer" class="nav-item active text-[10px] uppercase tracking-widest text-slate-400 whitespace-nowrap">Oferta</a>
+            <a href="#ngrohta" data-key="nav-hot" class="nav-item text-[10px] uppercase tracking-widest text-slate-400 whitespace-nowrap">Ngrohta</a>
+            <a href="#freskuese" data-key="nav-cold" class="nav-item text-[10px] uppercase tracking-widest text-slate-400 whitespace-nowrap">Freskuese</a>
+            <a href="#birra" data-key="nav-beer" class="nav-item text-[10px] uppercase tracking-widest text-slate-400 whitespace-nowrap">Birra</a>
+            <a href="#alkoolike" data-key="nav-alcohol" class="nav-item text-[10px] uppercase tracking-widest text-slate-400 whitespace-nowrap">Alkoolike</a>
+            <a href="#cocktails" data-key="nav-cocktails" class="nav-item text-[10px] uppercase tracking-widest text-slate-400 whitespace-nowrap">Cocktails</a>
+            <a href="#tjera" data-key="nav-others" class="nav-item text-[10px] uppercase tracking-widest text-slate-400 whitespace-nowrap">Tjera</a>
+        </div>
+        <div class="scroll-progress-container"><div id="scroll-bar"></div></div>
+    </nav>
+
+    <main class="px-6 mt-16 max-w-lg mx-auto space-y-24">
+
+        <!-- Oferta -->
+        <section id="oferte">
+            <div class="section-header">
+                <img src="C:\Users\ASUS\OneDrive\Pictures\OFE.png" alt="Oferta" class="category-icon" style="display: block;">
+                <h2 data-key="nav-offer" class="serif text-2xl italic text-amber-900">— Oferta —</h2>
+            </div>
+            <div class="glass-card rounded-3xl p-8 border-2 border-amber-50/50">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-lg font-extrabold text-slate-900 tracking-tight">Mengjes</span>
+                    <span class="price text-2xl text-amber-800">200</span>
+                </div>
+                <p data-key="combo-desc" class="text-xs text-slate-500 font-medium leading-relaxed uppercase tracking-tighter opacity-80">Briosh + Kafe + Ujë</p>
+            </div>
+        </section>
+
+        <!-- Të Ngrohta -->
+        <section id="ngrohta">
+            <div class="section-header">
+                <img src="C:\Users\ASUS\OneDrive\Pictures\COFFE.jpg" alt="Ngrohta" class="category-icon" style="display: block;">
+                <h2 data-key="nav-hot" class="serif text-2xl italic text-slate-400">— Të Ngrohta —</h2>
+            </div>
+            <div class="space-y-2">
+                <div class="menu-row"><span data-key="p-cokollate">Çokollatë</span><div class="dots"></div><span class="price">180</span></div>
+                <div class="menu-row"><span>Freddo Cappuccino</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Freddo Caffe</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Late Macchiato</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span data-key="p-kakao">Kakao</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span data-key="p-caj-bio">Çaj Bio</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span data-key="p-kapucino">Kapucino</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Macchiato</span><div class="dots"></div><span class="price">80</span></div>
+                <div class="menu-row"><span data-key="p-caj">Çaj</span><div class="dots"></div><span class="price">80</span></div>
+                <div class="menu-row"><span data-key="p-kafe">Kafe</span><div class="dots"></div><span class="price">80</span></div>
+            </div>
+        </section>
+
+        <!-- Freskuese -->
+        <section id="freskuese">
+            <div class="section-header">
+                <img src="C:\Users\ASUS\OneDrive\Pictures\COKE.jpg" alt="Freskuese" class="category-icon" style="display: block;">
+                <h2 data-key="nav-cold" class="serif text-2xl italic text-slate-400">— Freskuese —</h2>
+            </div>
+            <div class="space-y-2">
+                <div class="menu-row font-bold text-amber-900"><span data-key="p-limonade">Limonade Rose</span><div class="dots"></div><span class="price">400</span></div>
+                <div class="menu-row"><span>Red Bull</span><div class="dots"></div><span class="price">250</span></div>
+                <div class="menu-row"><span data-key="p-leng-frut">Lëng frutash</span><div class="dots"></div><span class="price">250</span></div>
+                <div class="menu-row"><span>Tonic Water</span><div class="dots"></div><span class="price">200</span></div>
+                <div class="menu-row"><span data-key="p-uje-vit">Ujë me vitamine</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Amita</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>B52</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Bravo</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Cola / Fanta / Ivi</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Golden Eagle</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Limon / Oran Soda</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Lipton / Schweppes</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span data-key="p-uje-nat">Ujë Natyral 0.5L</span><div class="dots"></div><span class="price">70</span></div>
+                <div class="menu-row"><span data-key="p-uje-gaz">Ujë me gaz 0.5L</span><div class="dots"></div><span class="price">70</span></div>
+            </div>
+        </section>
+
+        <!-- Birra -->
+        <section id="birra">
+    <div class="section-header">
+        <img src="C:\Users\ASUS\OneDrive\Pictures\BEER.jpg" alt="Birra" class="category-icon" style="display: block;">
+        <div class="flex items-center gap-2">
+            <h2 data-key="nav-beer" class="serif text-2xl italic text-slate-400">— Birra —</h2>
+            
+            <button 
+                onclick="alert('Birra shoqerohet me patatina ose kikirikë, sipas preferencës tuaj.')" 
+                class="w-5 h-5 rounded-full border border-slate-300 flex items-center justify-center text-[10px] text-slate-400 font-serif italic hover:bg-slate-50 transition-colors">
+                i
+            </button>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-2 gap-4">
+        <div class="glass-card p-6 rounded-3xl text-center col-span-2">
+            <p class="text-sm font-bold">Kloster</p>
+            <p class="price mt-2 text-amber-800">500</p>
+        </div>
+        <div class="glass-card p-6 rounded-3xl text-center"><p class="text-sm font-bold">Paulaner</p><p class="price mt-2 text-amber-800">400</p></div>
+        <div class="glass-card p-6 rounded-3xl text-center"><p class="text-sm font-bold">Heineken</p><p class="price mt-2 text-amber-800">250</p></div>
+        <div class="glass-card p-6 rounded-3xl text-center"><p class="text-sm font-bold">Peroni Riserva</p><p class="price mt-2 text-amber-800">250</p></div>
+        <div class="glass-card p-6 rounded-3xl text-center"><p class="text-sm font-bold">Korça</p><p class="price mt-2 text-amber-800">200</p></div>
+    </div>
+</section>
+
+        <!-- Alkoolike -->
+        <section id="alkoolike">
+            <div class="section-header">
+                <img src="C:\Users\ASUS\OneDrive\Pictures\COCKTAIL.jpg" alt="Alkool" class="category-icon" style="display: block;">
+                <h2 data-key="nav-alcohol" class="serif text-2xl italic text-slate-400">— Alkoolike —</h2>
+            </div>
+            <div class="space-y-1">
+                <div class="menu-row font-black text-slate-900 bg-black/5 p-2 rounded-lg"><span>Chivas 18yo</span><div class="dots"></div><span class="price">550</span></div>
+                <div class="menu-row"><span>Gin Mare</span><div class="dots"></div><span class="price">450</span></div>
+                <div class="menu-row"><span>Gin Hendricks / Johny Black</span><div class="dots"></div><span class="price">400</span></div>
+                <div class="menu-row"><span>Jack Daniels Honey</span><div class="dots"></div><span class="price">400</span></div>
+                <div class="menu-row"><span>Amaro del Capo / Metaxa 7*</span><div class="dots"></div><span class="price">350</span></div>
+                <div class="menu-row"><span>Jack Daniels</span><div class="dots"></div><span class="price">350</span></div>
+                <div class="menu-row"><span>Vecchia / Amaro / Aperol</span><div class="dots"></div><span class="price">300</span></div>
+                <div class="menu-row"><span>Vodka Absolut / Bacardi</span><div class="dots"></div><span class="price">300</span></div>
+                <div class="menu-row"><span>Campari / Disarono / Havana</span><div class="dots"></div><span class="price">300</span></div>
+                <div class="menu-row"><span>Jagermeister / Johny Red</span><div class="dots"></div><span class="price">300</span></div>
+                <div class="menu-row"><span>Metaxa 5*</span><div class="dots"></div><span class="price">300</span></div>
+                <div class="menu-row"><span>Gin</span><div class="dots"></div><span class="price">250</span></div>
+                <div class="menu-row"><span>Konjak / Fernet</span><div class="dots"></div><span class="price">150</span></div>
+            </div>
+        </section>
+
+        <!-- Cocktails -->
+        <section id="cocktails">
+            <div class="section-header">
+                <img src="C:\Users\ASUS\OneDrive\Pictures\WhatsApp Image 2026-03-03 at 10.42.51 PM.jpeg" alt="Cocktails" class="category-icon" style="display: block;">
+                <h2 data-key="nav-cocktails" class="serif text-2xl italic text-slate-400">— Cocktails —</h2>
+            </div>
+            <div class="glass-card rounded-[2.5rem] p-10 space-y-6">
+                <div class="flex justify-between items-center pt-4 border-b border-black/5 pb-4"><span class="text-sm font-black italic underline decoration-amber-500 underline-offset-4">Espresso Martini</span><span class="price text-amber-800">600</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold">Mojito</span><span class="price text-amber-800">600</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold">Margarita</span><span class="price text-amber-800">600</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold">Vodka Sour</span><span class="price text-amber-800">600</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold">Capiroska</span><span class="price text-amber-800">600</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold">Gin Tonic</span><span class="price text-amber-800">500</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm font-bold">Aperol Spritz</span><span class="price text-amber-800">400</span></div>
+            </div>
+        </section>
+
+        <!-- Tjera -->
+        <section id="tjera" class="pb-10">
+            <div class="section-header">
+                <img src="C:\Users\ASUS\OneDrive\Pictures\ANP.jpg" alt="Tjera" class="category-icon" style="display: block;">
+                <h2 data-key="nav-others" class="serif text-2xl italic text-slate-400">— Te Tjera —</h2>
+            </div>
+            <div class="space-y-4">
+                <div class="menu-row"><span>Antipastë e madhe</span><div class="dots"></div><span class="price">2500</span></div>
+                <div class="menu-row"><span data-key="p-antipaste">Antipastë e vogël</span><div class="dots"></div><span class="price">1500</span></div>
+                 <div class="menu-row"><span>Tost</span><div class="dots"></div><span class="price">150</span></div>
+                <div class="menu-row"><span>Briosh</span><div class="dots"></div><span class="price">120</span></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-20 pb-20 text-center opacity-60">
+        <p class="serif text-3xl italic mb-2 tracking-tighter">Melody</p>
+        <p data-key="music-bar" class="text-[10px] tracking-[0.7em] uppercase font-bold text-slate-900">Music Bar 2026 © </p>
+    </footer>
+
+    <script>
+        const translations = {
+            sq: {
+                'music-bar': 'Music Bar',
+                'digital-menu': 'Menu Digjitale',
+                'nav-offer': 'Oferta',
+                'nav-hot': 'Të Ngrohta',
+                'nav-cold': 'Freskuese',
+                'nav-beer': 'Birra',
+                'nav-alcohol': 'Alkoolike',
+                'nav-cocktails': 'Cocktails',
+                'nav-others': 'Tjera',
+                'combo-desc': 'Briosh + Kafe + Ujë',
+                'p-kafe': 'Kafe', 'p-caj': 'Çaj', 'p-kakao': 'Kakao', 'p-caj-bio': 'Çaj Bio',
+                'p-kapucino': 'Kapucino', 'p-cokollate': 'Çokollatë', 'p-uje-nat': 'Ujë Natyral 0.5L',
+                'p-uje-gaz': 'Ujë me gaz 0.5L', 'p-uje-vit': 'Ujë me vitamine', 'p-leng-frut': 'Lëng frutash',
+                'p-limonade': 'Limonade Rose', 'p-antipaste': 'Antipastë e vogël'
+            },
+            en: {
+                'music-bar': 'Music Bar',
+                'digital-menu': 'Digital Menu',
+                'nav-offer': 'Offers',
+                'nav-hot': 'Hot Drinks',
+                'nav-cold': 'Soft Drinks',
+                'nav-beer': 'Beers',
+                'nav-alcohol': 'Spirits',
+                'nav-cocktails': 'Cocktails',
+                'nav-others': 'Others',
+                'combo-desc': 'Croissant + Coffee + Water',
+                'p-kafe': 'Coffee', 'p-caj': 'Tea', 'p-kakao': 'Cocoa', 'p-caj-bio': 'Organic Tea',
+                'p-kapucino': 'Cappuccino', 'p-cokollate': 'Hot Chocolate', 'p-uje-nat': 'Still Water 0.5L',
+                'p-uje-gaz': 'Sparkling Water 0.5L', 'p-uje-vit': 'Vitamin Water', 'p-leng-frut': 'Fruit Juice',
+                'p-limonade': 'Rose Lemonade', 'p-antipaste': 'Small Appetizer'
+            }
+        };
+
+        function setLanguage(lang) {
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (translations[lang][key]) el.innerText = translations[lang][key];
+            });
+            document.getElementById('btn-sq').style.opacity = lang === 'sq' ? '1' : '0.4';
+            document.getElementById('btn-en').style.opacity = lang === 'en' ? '1' : '0.4';
+            document.documentElement.lang = lang;
+        }
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-bar").style.width = scrolled + "%";
+
+            let current = "";
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                if (pageYOffset >= section.offsetTop - 180) current = section.getAttribute('id');
+            });
+
+            document.querySelectorAll('.nav-item').forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href').includes(current));
+            });
+        });
+        window.dispatchEvent(new Event('scroll'));
+    </script>
+</body>
+</html>
