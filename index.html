@@ -161,6 +161,16 @@
         .flag {
             font-size: 32px;
         }
+        .nav-scrolled {
+    padding-left: 80px !important;
+    transition: padding-left 0.4s ease;
+}
+
+@media (max-width: 640px) {
+    .nav-scrolled {
+        padding-left: 70px !important;
+    }
+}
     </style>
 </head>
 <body class="pb-24">
@@ -246,7 +256,7 @@
     </header>
 
     <!-- Navigation -->
-    <nav class="sticky-nav">
+    <nav class="sticky-nav" id="main-nav">
         <div class="flex py-5 px-6 gap-8 no-scrollbar overflow-x-auto justify-start md:justify-center">
             <a href="#oferte" data-key="nav-offer" class="nav-item active text-[10px] uppercase tracking-widest text-slate-400 whitespace-nowrap">Oferta</a>
             <a href="#ngrohta" data-key="nav-hot" class="nav-item text-[10px] uppercase tracking-widest text-slate-400 whitespace-nowrap">Ngrohta</a>
@@ -904,20 +914,31 @@
 
             // Scroll progress & active nav (original)
             window.addEventListener('scroll', () => {
-                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrolled = (winScroll / height) * 100;
-                document.getElementById("scroll-bar").style.width = scrolled + "%";
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    document.getElementById("scroll-bar").style.width = scrolled + "%";
 
-                let current = "";
-                const sections = document.querySelectorAll('section');
-                sections.forEach(section => {
-                    if (pageYOffset >= section.offsetTop - 180) current = section.getAttribute('id');
-                });
-                document.querySelectorAll('.nav-item').forEach(a => {
-                    a.classList.toggle('active', a.getAttribute('href').includes(current));
-                });
-            });
+    // ────────────────────────────────────────────────
+    // Move nav items right when scrolled down
+    const nav = document.querySelector('#main-nav');   // or '.sticky-nav' if you didn't add id
+    if (winScroll > 80) {
+        nav.classList.add('nav-scrolled');
+    } else {
+        nav.classList.remove('nav-scrolled');
+    }
+    // ────────────────────────────────────────────────
+
+    // Your existing code for highlighting active section
+    let current = "";
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        if (pageYOffset >= section.offsetTop - 180) current = section.getAttribute('id');
+    });
+    document.querySelectorAll('.nav-item').forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href').includes(current));
+    });
+});
 
             window.dispatchEvent(new Event('scroll'));
 
