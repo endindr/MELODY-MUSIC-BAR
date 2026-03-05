@@ -836,45 +836,15 @@ function closeMenu() {
     let currentCurrency = 'ALL';
     const EXCHANGE_RATE = 96;
 
-    // Your existing functions: setLanguage, setCurrency, updatePrices, toggleMenu, closeMenu, showBeerInfo, submitMelodyRating
-    // (copy-paste them here from your current code – don't change them)
+    // === All your functions (paste your full setLanguage, setCurrency, updatePrices, showBeerInfo, submitMelodyRating here) ===
+    // Example placeholders – REPLACE with your real functions
+    function setLanguage(lang) { /* your code */ }
+    function setCurrency(curr) { /* your code */ }
+    function updatePrices() { /* your code */ }
+    function showBeerInfo() { /* your code */ }
+    function submitMelodyRating(score) { /* your code */ }
 
-    // NEW: Full scroll listener with progress bar + nav shift + active item
-    window.addEventListener('scroll', () => {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        document.getElementById("scroll-bar").style.width = scrolled + "%";
-
-        // Shift nav content right when scrolled past ~80px
-        const nav = document.querySelector('#main-nav');
-        if (winScroll > 80) {
-            nav.classList.add('nav-scrolled');
-        } else {
-            nav.classList.remove('nav-scrolled');
-        }
-
-        // Highlight active nav section
-        let current = "";
-        const sections = document.querySelectorAll('section');
-        sections.forEach(section => {
-            if (pageYOffset >= section.offsetTop - 180) current = section.getAttribute('id');
-        });
-        document.querySelectorAll('.nav-item').forEach(a => {
-            a.classList.toggle('active', a.getAttribute('href').includes(current));
-        });
-    });
-
-    // Star hover preview (gold on hover) – keep this
-    document.querySelectorAll('.white-star').forEach((star, i) => {
-        star.addEventListener('mouseover', () => {
-            document.querySelectorAll('.white-star').forEach((s, idx) => {
-                s.style.color = idx <= i ? '#D4AF37' : '#eeeeee';
-            });
-        });
-        star.addEventListener('mouseout', () => {
-            <script>
-    // === Menu toggle functions (this was missing – now the hamburger will work) ===
+    // === Hamburger menu toggle – this makes the menu open/close ===
     function toggleMenu() {
         const menu = document.getElementById('mobile-menu');
         const ham = document.getElementById('hamburger');
@@ -889,7 +859,7 @@ function closeMenu() {
         menu.classList.remove('open');
     }
 
-    // === Your existing star hover code – keep it ===
+    // === Star hover for feedback ===
     document.querySelectorAll('.white-star').forEach((star, i) => {
         star.addEventListener('mouseover', () => {
             document.querySelectorAll('.white-star').forEach((s, idx) => {
@@ -901,14 +871,39 @@ function closeMenu() {
         });
     });
 
-    // === Run once on page load ===
+    // === Scroll listener – progress bar + nav shift + active item ===
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById("scroll-bar").style.width = scrolled + "%";
+
+        const nav = document.querySelector('#main-nav');
+        if (winScroll > 80) {
+            nav.classList.add('nav-scrolled');
+        } else {
+            nav.classList.remove('nav-scrolled');
+        }
+
+        let current = "";
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => {
+            if (pageYOffset >= section.offsetTop - 180) current = section.getAttribute('id');
+        });
+        document.querySelectorAll('.nav-item').forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href').includes(current));
+        });
+    });
+
+    // === On load ===
     window.addEventListener('load', () => {
         setLanguage('sq');
         setCurrency('ALL');
         updatePrices();
+        window.dispatchEvent(new Event('scroll')); // initial state for progress + active nav
     });
 
-    // === Close menu when clicking outside (optional but recommended) ===
+    // === Close menu on outside click ===
     document.addEventListener('click', (e) => {
         const menu = document.getElementById('mobile-menu');
         const ham = document.getElementById('hamburger');
