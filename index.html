@@ -198,6 +198,18 @@
     .nav-scrolled {
         padding-left: 70px !important;
     }
+function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const ham = document.getElementById('hamburger');
+    ham.classList.toggle('active');
+    menu.classList.toggle('open');
+}
+
+function closeMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const ham = document.getElementById('hamburger');
+    ham.classList.remove('active');
+    menu.classList.remove('open');
 }
     </style>
 </head>
@@ -861,20 +873,42 @@
             });
         });
         star.addEventListener('mouseout', () => {
+            <script>
+    // === Menu toggle functions (this was missing – now the hamburger will work) ===
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const ham = document.getElementById('hamburger');
+        ham.classList.toggle('active');
+        menu.classList.toggle('open');
+    }
+
+    function closeMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const ham = document.getElementById('hamburger');
+        ham.classList.remove('active');
+        menu.classList.remove('open');
+    }
+
+    // === Your existing star hover code – keep it ===
+    document.querySelectorAll('.white-star').forEach((star, i) => {
+        star.addEventListener('mouseover', () => {
+            document.querySelectorAll('.white-star').forEach((s, idx) => {
+                s.style.color = idx <= i ? '#D4AF37' : '#eeeeee';
+            });
+        });
+        star.addEventListener('mouseout', () => {
             document.querySelectorAll('.white-star').forEach(s => s.style.color = '#eeeeee');
         });
     });
 
-    // Run once on load
+    // === Run once on page load ===
     window.addEventListener('load', () => {
         setLanguage('sq');
         setCurrency('ALL');
         updatePrices();
-        // Trigger initial scroll calculations (progress bar + active nav + nav shift)
-        window.dispatchEvent(new Event('scroll'));
     });
 
-    // Click outside menu to close – keep this if you have it
+    // === Close menu when clicking outside (optional but recommended) ===
     document.addEventListener('click', (e) => {
         const menu = document.getElementById('mobile-menu');
         const ham = document.getElementById('hamburger');
