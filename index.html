@@ -993,56 +993,6 @@
         });
     });
 </script>
-
-        // Initialize
-        window.addEventListener('load', () => {
-            // Default language & currency
-            setLanguage('sq');
-            setCurrency('ALL');
-            updatePrices();
-
-            // Scroll progress & active nav (original)
-            window.addEventListener('scroll', () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    document.getElementById("scroll-bar").style.width = scrolled + "%";
-
-    // ────────────────────────────────────────────────
-    // Move nav items right when scrolled down
-    const nav = document.querySelector('#main-nav');   // or '.sticky-nav' if you didn't add id
-    if (winScroll > 80) {
-        nav.classList.add('nav-scrolled');
-    } else {
-        nav.classList.remove('nav-scrolled');
-    }
-    // ────────────────────────────────────────────────
-
-    // Your existing code for highlighting active section
-    let current = "";
-    const sections = document.querySelectorAll('section');
-    sections.forEach(section => {
-        if (pageYOffset >= section.offsetTop - 180) current = section.getAttribute('id');
-    });
-    document.querySelectorAll('.nav-item').forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href').includes(current));
-    });
-});
-
-            window.dispatchEvent(new Event('scroll'));
-
-            // Click outside menu to close
-            document.addEventListener('click', (e) => {
-                const menu = document.getElementById('mobile-menu');
-                const ham = document.getElementById('hamburger');
-                if (!menu.contains(e.target) && !ham.contains(e.target) && menu.classList.contains('open')) {
-                    closeMenu();
-                }
-            });
-        });
-
-        // Vercel Speed Insights
-        window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
