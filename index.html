@@ -172,14 +172,16 @@
     }
 .wine-header {
     justify-content: center !important;
-    color: #f5f5dc;               /* or #c07c00, #d97706, #92400e – choose your beige/brown */
-    font-weight: 600;
-    font-size: 1.05rem;
-    letter-spacing: 0.05em;
-    padding: 12px 0;
-    margin: 16px 0 24px;
-    border-top: 1px solid rgba(180, 83, 9, 0.15);    /* subtle separator – optional */
-    border-bottom: 1px solid rgba(180, 83, 9, 0.15); /* optional */
+    color: #f5f5dc;               /* light warm beige – change to #ede8d0 or #faf0e6 if you want even softer */
+    font-weight: 500;
+    font-size: 1.4rem;            /* or 1.5rem for bigger title feel */
+    letter-spacing: 0.08em;
+    padding: 20px 0 16px;
+    margin: 24px 0 32px;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    border-top: 1px solid rgba(245, 245, 220, 0.3);    /* very subtle light beige border – optional */
+    border-bottom: 1px solid rgba(245, 245, 220, 0.3); /* optional */
 }
 
 /* Optional: make it italic like your other headers */
@@ -394,7 +396,9 @@
         <section id="verë">
             <div class="section-header">
                 <img src="Gemini_Generated_Image_mivoypmivoypmivo.png" alt="Verë" class="category-icon" style="display: block;">
-                <h2 data-key="nav-wine" class="serif text-2xl italic text-slate-400">— Verë —</h2>
+                <h2 data-key="nav-wine" class="serif text-2xl italic bg-gradient-to-r from-[#9b1d64] to-[#c41e3a] bg-clip-text text-transparent">
+    — Verë e kuqe —
+</h2>
             </div>
             <div class="space-y-1">
                 <div class="menu-row font-black text-slate-900 bg-black/5 p-2 rounded-lg"><span data-key="wine-monte">Montepulciano Gotë/Shishe</span><div class="dots"></div><span class="price" data-lek="500" data-lek2="2000">500/2000</span></div>
@@ -403,7 +407,8 @@
                 <div class="menu-row"><span data-key="wine-chianti">Chianti Shishe</span><div class="dots"></div><span class="price" data-lek="3000">3000</span></div>
                 <div class="menu-row"><span data-key="wine-corape">Çorapëkuqe Shishe</span><div class="dots"></div><span class="price" data-lek="2500">2500</span></div>
                 <div class="section-header mt-8 mb-6">
-    <h3 data-key="wine-white" class="serif text-2xl italic text-amber-800 tracking-tight">
+    <div class="text-center py-6">
+    <h3 data-key="wine-white" class="serif text-2xl italic tracking-wide" style="color: #f5f5dc;">
         Verë e bardhë
     </h3>
 </div>
