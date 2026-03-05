@@ -189,6 +189,16 @@
     font-family: 'Playfair Display', serif;
     font-style: italic;
 }
+    .nav-scrolled {
+    padding-left: 80px !important;
+    transition: padding-left 0.4s ease;
+}
+
+@media (max-width: 640px) {
+    .nav-scrolled {
+        padding-left: 70px !important;
+    }
+}
     </style>
 </head>
 <body class="pb-24">
@@ -811,140 +821,65 @@
         };
 
         let currentLang = 'sq';
-        let currentCurrency = 'ALL';
-        const EXCHANGE_RATE = 96;
+    let currentCurrency = 'ALL';
+    const EXCHANGE_RATE = 96;
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.documentElement.lang = lang;
+    // Your existing functions: setLanguage, setCurrency, updatePrices, toggleMenu, closeMenu, showBeerInfo, submitMelodyRating
+    // (copy-paste them here from your current code – don't change them)
 
-            document.querySelectorAll('[data-key]').forEach(el => {
-                const key = el.getAttribute('data-key');
-                if (translations[lang]?.[key]) {
-                    el.textContent = translations[lang][key];
-                }
-            });
+    // NEW: Full scroll listener with progress bar + nav shift + active item
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById("scroll-bar").style.width = scrolled + "%";
 
-            document.querySelectorAll('.lang-option').forEach(opt => {
-                opt.classList.toggle('active', opt.id === `lang-${lang}`);
-            });
-
-            const menuTitle = document.querySelector('#mobile-menu h2');
-            if (menuTitle) menuTitle.textContent = translations[lang]['music-bar'] || 'Melody';
+        // Shift nav content right when scrolled past ~80px
+        const nav = document.querySelector('#main-nav');
+        if (winScroll > 80) {
+            nav.classList.add('nav-scrolled');
+        } else {
+            nav.classList.remove('nav-scrolled');
         }
 
-        function setCurrency(curr) {
-            currentCurrency = curr;
-            document.getElementById('btn-all')?.classList.toggle('border-amber-800', 'bg-amber-50', curr === 'ALL');
-            document.getElementById('btn-all')?.classList.toggle('border-slate-300', curr !== 'ALL');
-            document.getElementById('btn-eur')?.classList.toggle('border-amber-800', 'bg-amber-50', curr === 'EUR');
-            document.getElementById('btn-eur')?.classList.toggle('border-slate-300', curr !== 'EUR');
+        // Highlight active nav section
+        let current = "";
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => {
+            if (pageYOffset >= section.offsetTop - 180) current = section.getAttribute('id');
+        });
+        document.querySelectorAll('.nav-item').forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href').includes(current));
+        });
+    });
 
-            updatePrices();
-        }
-
-        function updatePrices() {
-            document.querySelectorAll('.price').forEach(el => {
-                let lek = parseFloat(el.dataset.lek) || 0;
-                let lek2 = parseFloat(el.dataset.lek2) || null;
-
-                if (!lek) return;
-
-                let txt = '';
-                if (currentCurrency === 'EUR') {
-                    let eur = (lek / EXCHANGE_RATE).toFixed(2);
-                    txt = eur + ' €';
-                    if (lek2) {
-                        let eur2 = (lek2 / EXCHANGE_RATE).toFixed(2);
-                        txt = eur + ' / ' + eur2 + ' €';
-                    }
-                } else {
-                    txt = lek;
-                    if (lek2) txt += ' / ' + lek2;
-                }
-                el.textContent = txt;
-            });
-        }
-
-        function toggleMenu() {
-            document.getElementById('hamburger')?.classList.toggle('active');
-            document.getElementById('mobile-menu')?.classList.toggle('open');
-        }
-
-        function closeMenu() {
-            document.getElementById('hamburger')?.classList.remove('active');
-            document.getElementById('mobile-menu')?.classList.remove('open');
-        }
-
-        function showBeerInfo() {
-            const messages = {
-                sq: 'Birra shoqërohet me patatina ose kikirikë, sipas preferencës tuaj.',
-                en: 'Beer is served with chips or peanuts, according to your preference.',
-                de: 'Bier wird mit Chips oder Erdnüssen serviert, je nach Wunsch.',
-                it: 'La birra viene servita con patatine o arachidi, a vostra preferenza.'
-            };
-            alert(messages[currentLang] || messages.en);
-        }
-
-        // ==================== RATING LOGIC ====================
-        function submitMelodyRating(score) {
-            const status = document.getElementById('luxe-status');
-            const card = document.getElementById('rating-card');
-            if (!status || !card) return;
-
-            status.textContent = currentLang === 'en' ? "Sending..." : "Duke u dërguar...";
-
-            fetch("https://formspree.io/f/mbdzrggg", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    rating: score + " Stars",
-                    site: "Melody Music Bar - White Edition",
-                    language: currentLang
-                })
-            })
-            .then(() => {
-                card.style.transition = "all 0.6s cubic-bezier(0.4,0,0.2,1)";
-                card.style.transform = "translateY(-10px)";
-
-                setTimeout(() => {
-                    card.innerHTML = `
-                        <div style="animation: successPop 0.6s forwards; text-align: center;">
-                            <div style="font-size:3rem; margin-bottom:20px;">✨</div>
-                            <h3 style="color:#000; font-weight:600; letter-spacing:4px; font-size:1.2rem; text-transform:uppercase;">Faleminderit.</h3>
-                            <p style="color:#D4AF37; font-size:0.8rem; margin-top:10px; font-weight:500;">
-                                VLËRËSIMI U DËRGUA: ${score} YJE
-                            </p>
-                        </div>
-                    `;
-                }, 400);
-            })
-            .catch(() => {
-                status.textContent = currentLang === 'en' ? "Error – try again" : "Gabim – provo sërish";
-            });
-        }
-
-        // Star hover preview (gold on hover)
-        document.querySelectorAll('.white-star').forEach((star, i) => {
-            star.addEventListener('mouseover', () => {
-                document.querySelectorAll('.white-star').forEach((s, idx) => {
-                    s.style.color = idx <= i ? '#D4AF37' : '#eeeeee';
-                });
-            });
-            star.addEventListener('mouseout', () => {
-                document.querySelectorAll('.white-star').forEach(s => s.style.color = '#eeeeee');
+    // Star hover preview (gold on hover) – keep this
+    document.querySelectorAll('.white-star').forEach((star, i) => {
+        star.addEventListener('mouseover', () => {
+            document.querySelectorAll('.white-star').forEach((s, idx) => {
+                s.style.color = idx <= i ? '#D4AF37' : '#eeeeee';
             });
         });
-
-        // Run once on load
-        document.addEventListener('DOMContentLoaded', () => {
-            setLanguage('sq');
-            setCurrency('ALL');
-            updatePrices();
+        star.addEventListener('mouseout', () => {
+            document.querySelectorAll('.white-star').forEach(s => s.style.color = '#eeeeee');
         });
-    </script>
+    });
 
-    <script defer src="/_vercel/speed-insights/script.js"></script>
-    <script defer src="/_vercel/insights/script.js"></script>
-</body>
-</html>
+    // Run once on load
+    window.addEventListener('load', () => {
+        setLanguage('sq');
+        setCurrency('ALL');
+        updatePrices();
+        // Trigger initial scroll calculations (progress bar + active nav + nav shift)
+        window.dispatchEvent(new Event('scroll'));
+    });
+
+    // Click outside menu to close – keep this if you have it
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('mobile-menu');
+        const ham = document.getElementById('hamburger');
+        if (!menu.contains(e.target) && !ham.contains(e.target) && menu.classList.contains('open')) {
+            closeMenu();
+        }
+    });
+</script>
