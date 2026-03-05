@@ -371,7 +371,59 @@
     <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>
+<section id="menu-rating-section" style="padding: 60px 20px; text-align: center; background: linear-gradient(to bottom, transparent, #0f0f0f); margin-top: 50px; color: #fff; font-family: sans-serif;">
+    <div id="rating-container">
+        <h3 style="font-size: 1.2rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; color: #FFD700;">
+            How was the Melody experience?
+        </h3>
+        
+        <div style="display: flex; justify-content: center; gap: 12px; font-size: 3rem;">
+            <span class="star" onclick="sendRating(1)" style="cursor: pointer; transition: 0.2s;">☆</span>
+            <span class="star" onclick="sendRating(2)" style="cursor: pointer; transition: 0.2s;">☆</span>
+            <span class="star" onclick="sendRating(3)" style="cursor: pointer; transition: 0.2s;">☆</span>
+            <span class="star" onclick="sendRating(4)" style="cursor: pointer; transition: 0.2s;">☆</span>
+            <span class="star" onclick="sendRating(5)" style="cursor: pointer; transition: 0.2s;">☆</span>
+        </div>
+        <p style="margin-top: 20px; font-size: 0.8rem; opacity: 0.5;">TAP A STAR TO RATE</p>
+    </div>
+</section>
 
+<script type="module">
+    import { track } from 'https://esm.sh/@vercel/analytics';
+
+    window.sendRating = (score) => {
+        // Send to Vercel Analytics
+        track('Menu Rating', { score: score });
+
+        // Change the UI to look fancy after clicking
+        const container = document.getElementById('rating-container');
+        container.innerHTML = `
+            <div style="color: #FFD700; animation: fadeIn 0.8s;">
+                <div style="font-size: 3rem; margin-bottom: 10px;">🥂</div>
+                <h3 style="font-size: 1.5rem;">Cheers!</h3>
+                <p style="opacity: 0.8;">Your ${score}-star rating was sent to our team.</p>
+            </div>
+        `;
+    };
+
+    // Simple star hover effect
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+        star.onmouseover = () => {
+            stars.forEach((s, i) => s.innerText = i <= index ? '★' : '☆');
+            star.style.transform = 'scale(1.2)';
+        };
+        star.onmouseout = () => {
+            stars.forEach((s) => s.innerText = '☆');
+            star.style.transform = 'scale(1)';
+        };
+    });
+</script>
+
+<style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .star:hover { color: #FFD700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+</style>
 
 
 
